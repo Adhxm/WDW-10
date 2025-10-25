@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Daftar Belanja Sederhana</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    li { padding: 5px; border-bottom: 1px solid #ccc; }
+    .beli { text-decoration: line-through; color: gray; }
+  </style>
+</head>
+<body>
+  <h2>🛍️ Aplikasi Daftar Belanja</h2>
+
+  <input type="text" id="itemInput" placeholder="Masukkan nama barang">
+  <button onclick="tambahItem()">Tambah Item</button>
+  <button onclick="tampilkanSemua()">Tampilkan Semua</button>
+  <button onclick="tampilkanBelum()">Tampilkan Belum Dibeli</button>
+
+  <h3>Daftar Belanja:</h3>
+  <ul id="daftarBelanja"></ul>
+  <p>Total Item: <span id="totalItem">0</span></p>
+
+  <script>
+    // Array untuk menyimpan item
+    var daftar = [];
+
+    // Fungsi untuk menambah item ke daftar
+    function tambahItem() {
+      var input = document.getElementById("itemInput");
+      var nama = input.value.trim();
+
+      if (nama === "") {
+        alert("Masukkan nama barang terlebih dahulu!");
+        return;
+      }
+
+      var itemBaru = { nama: nama, dibeli: false };
+      daftar.push(itemBaru);
+      input.value = ""; // kosongkan input
+
+      tampilkanSemua();
+    }
+
+    // Fungsi untuk menandai item sudah dibeli
+    function tandaiDibeli(index) {
+      daftar[index].dibeli = !daftar[index].dibeli;
+      tampilkanSemua();
+    }
+
+    // Fungsi untuk menghapus item dari daftar
+    function hapusItem(index) {
+      daftar.splice(index, 1);
+      tampilkanSemua();
+    }
+
+    // Fungsi untuk menampilkan semua item
+    function tampilkanSemua() {
+      var list = document.getElementById("daftarBelanja");
+      list.innerHTML = "";
+
+      for (var i = 0; i < daftar.length; i++) {
+        var item = daftar[i];
+        var statusClass = item.dibeli ? "beli" : "";
+
+        var li = "<li class='" + statusClass + "'>" +
+          (i + 1) + ". " + item.nama +
+          " <button onclick='tandaiDibeli(" + i + ")'>" +
+          (item.dibeli ? "Batal" : "Sudah Dibeli") +
+          "</button>" +
+          " <button onclick='hapusItem(" + i + ")'>Hapus</button></li>";
+
+        list.innerHTML += li;
+      }
+
+      document.getElementById("totalItem").innerText = daftar.length;
+    }
+
+    // Fungsi untuk menampilkan item yang belum dibeli
+    function tampilkanBelum() {
+      var list = document.getElementById("daftarBelanja");
+      list.innerHTML = "";
+
+      var belum = [];
+      for (var i = 0; i < daftar.length; i++) {
+        if (!daftar[i].dibeli) {
+          belum.push(daftar[i]);
+        }
+      }
+
+      if (belum.length === 0) {
+        list.innerHTML = "<li>Tidak ada item yang belum dibeli.</li>";
+      } else {
+        for (var j = 0; j < belum.length; j++) {
+          list.innerHTML += "<li>" + belum[j].nama + "</li>";
+        }
+      }
+
+      document.getElementById("totalItem").innerText = belum.length;
+    }
+  </script>
+</body>
+</html>
